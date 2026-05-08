@@ -176,65 +176,41 @@ app/
 ## 📷 실행 화면
 
 ### 🔐 관리자 인증 화면
-관리자 PIN 번호 인증 후 시스템에 접근할 수 있도록 구현한 화면입니다.
-
-<p align="center">
-  <img src="images/admin_login.png" width="300"/>
-</p>
+관리자 PIN 번호 인증 후 시스템에 접근할 수 있도록 구현한 화면입니다.  
+<img src="images/admin_login.png" width="300"/>
 
 ---
 
 ### 📦 메인 화면
-택배 등록, 바코드 스캔, 택배 목록 기능으로 이동할 수 있는 메인 화면입니다.
-
-<p align="center">
-  <img src="images/main.png" width="300"/>
-</p>
+택배 등록, 바코드 스캔, 택배 목록 기능으로 이동할 수 있는 메인 화면입니다.  
+<img src="images/main.png" width="300"/>
 
 ---
 
 ### 📝 택배 등록 화면
-송장번호, 수령인, 지역 정보를 입력하여 택배를 등록하는 화면입니다.
-
-<p align="center">
-  <img src="images/register.png" width="300"/>
-</p>
+송장번호, 수령인, 지역 정보를 입력하여 택배를 등록하는 화면입니다.  
+<img src="images/register.png" width="300"/>
 
 ---
 
 ### 📋 택배 목록 화면
-등록된 택배 목록과 상태 및 구역 정보를 확인할 수 있는 화면입니다.
-
-<p align="center">
-  <img src="images/list.png" width="300"/>
-</p>
+등록된 택배 목록과 상태 및 구역 정보를 확인할 수 있는 화면입니다.  
+<img src="images/list.png" width="300"/>
 
 ---
 
 ### 📄 상세 정보 화면
-택배 상세 정보와 바코드 및 배송 상태를 확인할 수 있는 화면입니다.
-
-<p align="center">
-  <img src="images/detail.png" width="300"/>
-</p>
+택배 상세 정보와 바코드 및 배송 상태를 확인할 수 있는 화면입니다.  
+<img src="images/detail.png" width="300"/>
 
 ---
 
 ### 📊 물류 통계 화면
-상태별 및 구역별 물류 통계를 확인할 수 있는 Dashboard 화면입니다.
-
-<p align="center">
-  <img src="images/statistics.png" width="300"/>
-</p>
+상태별 및 구역별 물류 통계를 확인할 수 있는 Dashboard 화면입니다.  
+<img src="images/statistics.png" width="300"/>
 
 ---
 
-### 📷 바코드 스캔 화면
-카메라를 통해 바코드를 스캔하고 택배 정보를 조회하는 화면입니다.
-
-<p align="center">
-  <img src="images/scan.png" width="300"/>
-</p>
 ### 📷 바코드 스캔 화면
 카메라를 통해 바코드를 스캔하고 택배 정보를 조회하는 화면입니다.  
 <img src="images/scan.png" width="300"/>
