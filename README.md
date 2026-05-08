@@ -1,3 +1,41 @@
+# 📦 In-Orbit
+
+![Language](https://img.shields.io/badge/Language-Kotlin-blue)
+![Database](https://img.shields.io/badge/Database-SQLite-lightgrey)
+![Barcode](https://img.shields.io/badge/Barcode-ZXing-green)
+![Platform](https://img.shields.io/badge/Platform-Android-3DDC84)
+
+Android Kotlin 기반 스마트 택배 관리 및 바코드 시스템 앱입니다.
+
+---
+
+## 📌 프로젝트 소개
+본 프로젝트는 물류 및 택배 관리 환경을 가정하여,  
+택배 등록, 바코드 생성 및 스캔, 상태 관리, 통계 기능 등을 통합한 Android 기반 스마트 물류 관리 앱입니다.
+
+SQLite 기반 데이터 저장 구조를 활용하여 택배 정보를 관리하고,  
+ZXing 라이브러리를 활용한 바코드 스캔 기능을 통해 실시간 조회 및 등록 기능을 구현했습니다.
+
+또한 구역별 분류 및 배송 상태 관리 기능을 통해 실제 물류 시스템 흐름을 반영하도록 구성했습니다.
+
+---
+
+## 📅 프로젝트 정보
+- 개발 기간: 2026.05.07 ~ 2026.05.08
+- 개발 형태: 개인 프로젝트
+- 개발 언어: Kotlin
+- 개발 환경: Android Studio
+
+---
+
+## 🧩 시스템 구성
+- 관리자 인증 시스템
+- 택배 등록 시스템
+- 바코드 생성 및 스캔 시스템
+- 택배 목록 및 상세 조회 시스템
+- 배송 상태 관리 시스템
+- 통계 및 구역 분석 시스템
+
 ---
 
 ## 🔄 시스템 흐름
