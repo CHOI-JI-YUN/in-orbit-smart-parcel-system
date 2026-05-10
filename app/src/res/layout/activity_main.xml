@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="#F5F7FA">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/homelogo"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="📦  택배 등록"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#4361EE"
+        android:background="@drawable/btn_primary"
+        android:stateListAnimator="@null"
+        android:layout_marginTop="-60dp"
+        android:layout_marginBottom="14dp"/>
+
+    <Button
+        android:id="@+id/btnScan"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="📷  바코드 스캔"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#3A86FF"
+        android:background="@drawable/btn_secondary"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="14dp"/>
+
+    <Button
+        android:id="@+id/btnList"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="📋  택배 목록"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#06D6A0"
+        android:background="@drawable/btn_accent"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="14dp"/>
+
+
+    <!-- 숨기려면 사용 android:visibility="gone"-->
+    <!-- 버튼 숨기고 싶으면 위에 코드 사용-->
+    <!-- ⭐ 테스트용 더미 데이터 채우기 버튼 -->
+    <Button
+        android:id="@+id/btnSeedDummy"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="🧪  테스트 데이터 채우기"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#666666"
+        android:backgroundTint="#E9ECF5"
+        android:background="@drawable/btn_back"
+        android:visibility="gone"
+        android:stateListAnimator="@null"/>
+
+</LinearLayout>

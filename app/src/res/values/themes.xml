@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- AppCompat 테마 - 버튼 색상 자동 적용 안 함 -->
+    <style name="Base.Theme.ParcelTrack" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#4361EE</item>
+        <item name="colorPrimaryDark">#3045C7</item>
+        <item name="colorAccent">#4361EE</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="Theme.ParcelTrack" parent="Base.Theme.ParcelTrack" />
+</resources>

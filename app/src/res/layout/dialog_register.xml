@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <EditText
+        android:id="@+id/etReceiver"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="받는 사람"
+        android:padding="12dp"
+        android:textSize="14sp"
+        android:background="@drawable/bg_input"/>
+
+    <EditText
+        android:id="@+id/etRegion"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="지역"
+        android:padding="12dp"
+        android:textSize="14sp"
+        android:background="@drawable/bg_input"
+        android:layout_marginTop="14dp"/>
+
+</LinearLayout>

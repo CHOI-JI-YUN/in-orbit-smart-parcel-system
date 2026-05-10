@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- 브랜드 컬러 -->
+    <color name="brand_primary">#4361EE</color>
+    <color name="brand_primary_dark">#3045C7</color>
+    <color name="brand_secondary">#3A86FF</color>
+    <color name="brand_accent">#06D6A0</color>
+
+    <!-- 배경 / 카드 -->
+    <color name="bg_screen">#F5F7FA</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="border_light">#E5E8F0</color>
+
+    <!-- 텍스트 -->
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#666666</color>
+    <color name="text_hint">#999999</color>
+    <color name="text_disabled">#BBBBBB</color>
+
+    <!-- 상태 컬러 -->
+    <color name="status_ready">#4361EE</color>     <!-- 접수 완료 -->
+    <color name="status_sorting">#FFB703</color>   <!-- 분류중 -->
+    <color name="status_shipping">#06D6A0</color>  <!-- 배송중 -->
+    <color name="status_complete">#888888</color>  <!-- 배송 완료 -->
+
+    <!-- 위험 / 보조 -->
+    <color name="danger">#EF233C</color>
+    <color name="neutral">#9CA3AF</color>
+</resources>
