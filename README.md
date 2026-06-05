@@ -5,7 +5,7 @@
 ![Barcode](https://img.shields.io/badge/Barcode-ZXing-green)
 ![Platform](https://img.shields.io/badge/Platform-Android-3DDC84)
 
-Android Kotlin 기반 스마트 물류 및 택배 관리 시스템 앱입니다.
+Android Kotlin 기반 바코드·배송 상태 관리 기능을 포함한 스마트 물류 및 택배 관리 시스템 앱입니다.
 
 ---
 
@@ -165,15 +165,26 @@ In-Orbit/
 │   └── src/
 │       └── main/
 │           ├── java/com/example/parceltrack/
-│           │   ├── Activity (Main, Register, List, Detail, Scan, Statistics)
-│           │   ├── DatabaseHelper.kt
+│           │   ├── PinActivity.kt
+│           │   ├── MainActivity.kt
+│           │   ├── RegisterActivity.kt
+│           │   ├── ListActivity.kt
+│           │   ├── DetailActivity.kt
+│           │   ├── ScanActivity.kt
+│           │   ├── StatisticsActivity.kt
 │           │   ├── Parcel.kt
+│           │   ├── DatabaseHelper.kt
 │           │   └── ParcelAdapter.kt
 │           │
 │           ├── res/
+│           │   ├── layout/
+│           │   ├── drawable/
+│           │   ├── values/
+│           │   └── xml/
+│           │
 │           └── AndroidManifest.xml
 │
-├── images/
+├── images/          # README 실행 화면 이미지
 ├── README.md
 └── .gitignore
 ```
