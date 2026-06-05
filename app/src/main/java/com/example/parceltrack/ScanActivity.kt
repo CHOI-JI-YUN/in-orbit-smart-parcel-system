@@ -88,7 +88,7 @@ class ScanActivity : AppCompatActivity() {
                 val zone = Parcel.classifyZone(region)
 
                 val currentDate = SimpleDateFormat(
-                    "yyyy-MM-dd",
+                    "yyyy-MM-dd HH:mm:ss",
                     Locale.getDefault()
                 ).format(Date())
 
@@ -105,7 +105,8 @@ class ScanActivity : AppCompatActivity() {
 
                 Toast.makeText(this, "택배가 자동 등록되었습니다.", Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(this, ListActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 startActivity(intent)
                 finish()
             }

@@ -3,32 +3,36 @@ package com.example.parceltrack
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.Random
 
 data class Parcel(
     val id: Int = 0,
     val trackingNumber: String,
     val receiver: String,
     val region: String,
-    val zone: String,        // 자동 분류 구역
+    val zone: String,
     val status: String,
     val createdAt: String,
-    val autoMode: Int = 1    // 1 = 자동 진행 ON, 0 = 수동 모드 (사용자가 직접 변경 시)
+    val autoMode: Int = 1,
+    val sortingAt: String = "",
+    val shippingAt: String = "",
+    val completeAt: String = ""
 ) {
     companion object {
-        // 배송 상태 목록
-        val STATUS_LIST = listOf(
-            "접수 완료",
-            "분류중",
-            "배송중",
-            "배송 완료"
-        )
+        val STATUS_LIST = listOf("접수 완료", "분류중", "배송중", "배송 완료")
 
-        // 자동 진행 시간 기준 (분 단위)
-        const val MINUTES_TO_SORTING = 30L      // 30분 후 → 분류중
-        const val MINUTES_TO_SHIPPING = 120L    // 2시간 후 → 배송중
-        const val MINUTES_TO_COMPLETE = 1440L   // 24시간 후 → 배송 완료
+        private val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        private val displayDf = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        private val random = Random()
 
-        // 지역 → 분류 구역 자동 매핑
+        // 각 단계 지속 시간 범위 (분)
+        const val SORTING_DELAY_MIN = 25L     // 접수 완료 → 분류중: 25~45분
+        const val SORTING_DELAY_MAX = 45L
+        const val SHIPPING_DELAY_MIN = 90L    // 분류중 → 배송중: 1.5hr ~ 약3hr
+        const val SHIPPING_DELAY_MAX = 170L
+        const val COMPLETE_DELAY_MIN = 1080L  // 배송중 → 배송 완료: 18hr ~ 28hr
+        const val COMPLETE_DELAY_MAX = 1680L
+
         fun classifyZone(region: String): String {
             return when {
                 region.contains("서울") -> "A구역"
@@ -42,41 +46,75 @@ data class Parcel(
             }
         }
 
-        // 등록 시 사용할 날짜+시간 형식
-        fun nowDateTime(): String {
-            return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+        fun nowDateTime(): String = df.format(Date())
+
+        fun formatDisplay(dateStr: String): String {
+            val d = parseDate(dateStr) ?: return dateStr
+            return displayDf.format(d)
         }
 
-        // 등록 시간으로부터 경과한 분 수 계산
-        fun minutesSince(createdAt: String): Long {
-            return try {
-                val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                val createdDate = format.parse(createdAt) ?: return 0
-                val nowMs = System.currentTimeMillis()
-                val createdMs = createdDate.time
-                (nowMs - createdMs) / (60 * 1000)
-            } catch (e: Exception) {
-                // 옛날 형식 (yyyy-MM-dd)도 호환되게 시도
-                try {
-                    val format2 = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    val createdDate = format2.parse(createdAt) ?: return 0
-                    val nowMs = System.currentTimeMillis()
-                    val createdMs = createdDate.time
-                    (nowMs - createdMs) / (60 * 1000)
-                } catch (e2: Exception) {
-                    0
+        fun randomMinutes(min: Long, max: Long): Long {
+            return min + (random.nextDouble() * (max - min + 1)).toLong()
+        }
+
+        fun addMinutes(dateStr: String, minutes: Long): String {
+            val date = parseDate(dateStr) ?: return dateStr
+            return df.format(Date(date.time + minutes * 60 * 1000))
+        }
+
+        // 접수 시점 기준으로 랜덤 전환 시각 3개 생성
+        fun generateTransitionTimes(createdAt: String): Triple<String, String, String> {
+            val sortingAt = addMinutes(createdAt, randomMinutes(SORTING_DELAY_MIN, SORTING_DELAY_MAX))
+            val shippingAt = addMinutes(sortingAt, randomMinutes(SHIPPING_DELAY_MIN, SHIPPING_DELAY_MAX))
+            val completeAt = addMinutes(shippingAt, randomMinutes(COMPLETE_DELAY_MIN, COMPLETE_DELAY_MAX))
+            return Triple(sortingAt, shippingAt, completeAt)
+        }
+
+        // 수동 상태 변경 시: 해당 시점부터 이후 전환 시각 재생성
+        fun regenerateFromStatus(newStatus: String, changedAt: String,
+                                 oldSortingAt: String, oldShippingAt: String): Triple<String, String, String> {
+            return when (newStatus) {
+                "분류중" -> {
+                    val shippingAt = addMinutes(changedAt, randomMinutes(SHIPPING_DELAY_MIN, SHIPPING_DELAY_MAX))
+                    val completeAt = addMinutes(shippingAt, randomMinutes(COMPLETE_DELAY_MIN, COMPLETE_DELAY_MAX))
+                    Triple(changedAt, shippingAt, completeAt)
                 }
+                "배송중" -> {
+                    val completeAt = addMinutes(changedAt, randomMinutes(COMPLETE_DELAY_MIN, COMPLETE_DELAY_MAX))
+                    Triple(oldSortingAt, changedAt, completeAt)
+                }
+                "배송 완료" -> {
+                    Triple(oldSortingAt, oldShippingAt, changedAt)
+                }
+                else -> Triple(oldSortingAt, oldShippingAt, "")
             }
         }
 
-        // 경과 시간 기반으로 "있어야 할" 상태 계산
-        fun expectedStatus(createdAt: String): String {
-            val minutes = minutesSince(createdAt)
+        // 저장된 전환 시각 기반으로 현재 있어야 할 상태 계산
+        fun expectedStatusFromTimes(sortingAt: String, shippingAt: String, completeAt: String): String {
+            val now = System.currentTimeMillis()
+            val sortingMs = parseDate(sortingAt)?.time ?: Long.MAX_VALUE
+            val shippingMs = parseDate(shippingAt)?.time ?: Long.MAX_VALUE
+            val completeMs = parseDate(completeAt)?.time ?: Long.MAX_VALUE
+
             return when {
-                minutes >= MINUTES_TO_COMPLETE -> "배송 완료"
-                minutes >= MINUTES_TO_SHIPPING -> "배송중"
-                minutes >= MINUTES_TO_SORTING -> "분류중"
+                now >= completeMs -> "배송 완료"
+                now >= shippingMs -> "배송중"
+                now >= sortingMs -> "분류중"
                 else -> "접수 완료"
+            }
+        }
+
+        fun parseDate(dateStr: String): Date? {
+            if (dateStr.isEmpty()) return null
+            return try {
+                df.parse(dateStr)
+            } catch (e: Exception) {
+                try {
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr)
+                } catch (e2: Exception) {
+                    null
+                }
             }
         }
     }

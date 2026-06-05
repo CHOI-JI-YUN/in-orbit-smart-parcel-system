@@ -3,7 +3,10 @@ package com.example.parceltrack
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.Gravity
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -53,36 +56,144 @@ class DetailActivity : AppCompatActivity() {
         val statusView = findViewById<TextView>(R.id.tvDetailStatus)
 
         when (parcel.status) {
-
-            "접수 완료" -> {
-                statusView.setBackgroundColor(
-                    Color.parseColor("#4361EE")
-                )
-            }
-
-            "분류중" -> {
-                statusView.setBackgroundColor(
-                    Color.parseColor("#FF9F1C")
-                )
-            }
-
-            "배송중" -> {
-                statusView.setBackgroundColor(
-                    Color.parseColor("#06D6A0")
-                )
-            }
-
-            "배송 완료" -> {
-                statusView.setBackgroundColor(
-                    Color.parseColor("#6C757D")
-                )
-            }
+            "접수 완료" -> statusView.setBackgroundColor(Color.parseColor("#4361EE"))
+            "분류중" -> statusView.setBackgroundColor(Color.parseColor("#FF9F1C"))
+            "배송중" -> statusView.setBackgroundColor(Color.parseColor("#06D6A0"))
+            "배송 완료" -> statusView.setBackgroundColor(Color.parseColor("#6C757D"))
         }
         findViewById<TextView>(R.id.tvDetailCreatedAt).text = parcel.createdAt
 
         findViewById<ImageView>(R.id.ivBarcode).setImageBitmap(
             generateBarcode(parcel.trackingNumber)
         )
+
+        // 배송 추적 타임라인 표시
+        buildTimeline(parcel)
+    }
+
+    private fun buildTimeline(parcel: Parcel) {
+        val container = findViewById<LinearLayout>(R.id.timelineContainer)
+        container.removeAllViews()
+
+        val now = System.currentTimeMillis()
+        val statusIndex = Parcel.STATUS_LIST.indexOf(parcel.status)
+
+        // 각 단계별 시각과 정보
+        data class TimelineStep(
+            val label: String,
+            val time: String,
+            val color: String,
+            val isPassed: Boolean
+        )
+
+        val steps = mutableListOf<TimelineStep>()
+
+        // 1. 접수 완료 - 항상 있음
+        steps.add(TimelineStep(
+            "접수 완료",
+            Parcel.formatDisplay(parcel.createdAt),
+            "#4361EE",
+            statusIndex >= 0
+        ))
+
+        // 2. 분류중
+        val sortingPassed = statusIndex >= 1
+        val sortingTime = if (parcel.sortingAt.isNotEmpty()) {
+            Parcel.formatDisplay(parcel.sortingAt)
+        } else ""
+        steps.add(TimelineStep(
+            "분류중",
+            if (sortingPassed) sortingTime else if (sortingTime.isNotEmpty()) "$sortingTime (예정)" else "",
+            "#FF9F1C",
+            sortingPassed
+        ))
+
+        // 3. 배송중
+        val shippingPassed = statusIndex >= 2
+        val shippingTime = if (parcel.shippingAt.isNotEmpty()) {
+            Parcel.formatDisplay(parcel.shippingAt)
+        } else ""
+        steps.add(TimelineStep(
+            "배송중",
+            if (shippingPassed) shippingTime else if (shippingTime.isNotEmpty()) "$shippingTime (예정)" else "",
+            "#06D6A0",
+            shippingPassed
+        ))
+
+        // 4. 배송 완료
+        val completePassed = statusIndex >= 3
+        val completeTime = if (parcel.completeAt.isNotEmpty()) {
+            Parcel.formatDisplay(parcel.completeAt)
+        } else ""
+        steps.add(TimelineStep(
+            "배송 완료",
+            if (completePassed) completeTime else if (completeTime.isNotEmpty()) "$completeTime (예정)" else "",
+            "#6C757D",
+            completePassed
+        ))
+
+        for (i in steps.indices) {
+            val step = steps[i]
+            val isLast = i == steps.size - 1
+
+            // 한 줄: ● 상태명     시각
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, dpToPx(2), 0, dpToPx(2))
+            }
+
+            // 원형 아이콘
+            val dot = TextView(this).apply {
+                text = if (step.isPassed) "●" else "○"
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                setTextColor(if (step.isPassed) Color.parseColor(step.color) else Color.parseColor("#CCCCCC"))
+                setPadding(0, 0, dpToPx(10), 0)
+            }
+            row.addView(dot)
+
+            // 상태명
+            val label = TextView(this).apply {
+                text = step.label
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                setTextColor(if (step.isPassed) Color.parseColor("#1A1A2E") else Color.parseColor("#BBBBBB"))
+                if (step.isPassed) setTypeface(null, Typeface.BOLD)
+                layoutParams = LinearLayout.LayoutParams(dpToPx(80), LinearLayout.LayoutParams.WRAP_CONTENT)
+            }
+            row.addView(label)
+
+            // 시각
+            val time = TextView(this).apply {
+                text = step.time
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                setTextColor(if (step.isPassed) Color.parseColor("#555555") else Color.parseColor("#BBBBBB"))
+            }
+            row.addView(time)
+
+            container.addView(row)
+
+            // 연결선 (마지막 아이템 제외)
+            if (!isLast) {
+                val line = TextView(this).apply {
+                    text = "│"
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    setTextColor(
+                        if (steps[i + 1].isPassed) Color.parseColor(steps[i + 1].color)
+                        else Color.parseColor("#DDDDDD")
+                    )
+                    setPadding(dpToPx(1), 0, 0, 0)
+                }
+                container.addView(line)
+            }
+        }
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            resources.displayMetrics
+        ).toInt()
     }
 
     private fun generateBarcode(text: String): Bitmap {
@@ -141,7 +252,8 @@ class DetailActivity : AppCompatActivity() {
             )
             .setPositiveButton("변경") { _, _ ->
 
-                db.updateStatus(parcelId, nextStatus)
+                // 수동 변경: 현재 시각 기록 + 이후 전환 시각 재생성
+                db.updateStatusManual(parcelId, nextStatus)
 
                 loadParcel()
 

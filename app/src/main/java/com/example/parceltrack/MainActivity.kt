@@ -13,6 +13,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // ⭐ 앱 시작 시 자동으로 더미 데이터 삽입 (중복은 건너뜀)
+        try {
+            val db = DatabaseHelper(this)
+            db.seedDummyData()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         // 택배 등록 버튼
         findViewById<Button>(R.id.btnRegister).setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
@@ -32,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnSeedDummy).setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("테스트 데이터 채우기")
-                .setMessage("어제(5/7) 35개 + 오늘(5/8) 12개 = 총 47개의 더미 택배를 추가합니다.\n\n기존 데이터는 유지되고, 송장번호가 중복된 것만 건너뜁니다.")
+                .setMessage("5/7(53개) + 5/8(38개) + 5/27(51개) + 5/28(47개) + 5/29(51개) + 5/30(17개) = 총 257개의 더미 택배를 추가합니다.\n\n기존 데이터는 유지되고, 송장번호가 중복된 것만 건너뜁니다.")
                 .setPositiveButton("추가") { _, _ ->
                     val db = DatabaseHelper(this)
                     val count = db.seedDummyData()

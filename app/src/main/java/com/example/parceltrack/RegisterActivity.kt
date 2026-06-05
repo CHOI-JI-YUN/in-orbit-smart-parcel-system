@@ -74,9 +74,10 @@ class RegisterActivity : AppCompatActivity() {
             val result = db.insertParcel(parcel)
 
             if (result > 0) {
-                Toast.makeText(this, "등록 완료! ($zone) - 시간에 따라 자동 진행됩니다", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "등록 완료! ($zone", Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(this, ListActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 startActivity(intent)
 
                 finish()

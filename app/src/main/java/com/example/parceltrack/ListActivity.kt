@@ -22,6 +22,9 @@ class ListActivity : AppCompatActivity() {
     private lateinit var tvEmpty: TextView
     private lateinit var spinnerStatusFilter: Spinner
 
+    // ⭐ 현재 검색어 상태 추적
+    private var currentSearchQuery: String = ""
+
     private val handler = Handler(Looper.getMainLooper())
 
     private val refreshRunnable = object : Runnable {
@@ -88,18 +91,17 @@ class ListActivity : AppCompatActivity() {
 
         btnSearch.setOnClickListener {
             val query = etSearch.text.toString().trim()
+            // ⭐ 검색어 상태 저장
+            currentSearchQuery = query
+            loadCurrentList()
 
-            val list = if (query.isEmpty()) {
-                db.getAllParcels()
-            } else {
-                db.searchParcels(query)
-            }
-
-            adapter.updateList(list)
-            updateEmptyView(list.isEmpty())
-
-            if (query.isNotEmpty() && list.isEmpty()) {
-                Toast.makeText(this, "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show()
+            if (query.isNotEmpty()) {
+                val count = adapter.itemCount
+                if (count == 0) {
+                    Toast.makeText(this, "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "${count}건 검색됨", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -114,6 +116,9 @@ class ListActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // ⭐ 돌아올 때 검색어 초기화
+        currentSearchQuery = ""
+        etSearch.setText("")
         loadCurrentList()
         handler.post(refreshRunnable)
     }
@@ -123,15 +128,22 @@ class ListActivity : AppCompatActivity() {
         handler.removeCallbacks(refreshRunnable)
     }
 
+    // ⭐ 검색어 + 상태 필터를 한 곳에서 처리
     private fun loadCurrentList() {
         val selected = spinnerStatusFilter.selectedItem?.toString() ?: "전체"
 
-        val list = if (selected == "전체") {
+        // 검색어가 있으면 DB 검색, 없으면 전체 조회
+        val baseList = if (currentSearchQuery.isEmpty()) {
             db.getAllParcels()
         } else {
-            db.getAllParcels().filter {
-                it.status == selected
-            }
+            db.searchParcels(currentSearchQuery)
+        }
+
+        // 상태 필터 적용
+        val list = if (selected == "전체") {
+            baseList
+        } else {
+            baseList.filter { it.status == selected }
         }
 
         adapter.updateList(list)
