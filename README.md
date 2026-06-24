@@ -1,4 +1,4 @@
-# 📦 In-Orbit
+# 📦 In-Orbit 택배 · 물류 관리 시스템
 
 ![Language](https://img.shields.io/badge/Language-Kotlin-blue)
 ![Database](https://img.shields.io/badge/Database-SQLite-lightgrey)
